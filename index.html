@@ -3,128 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FPOSH Receipt Generator</title>
+    <title>Receipt</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f7f4; /* soft grey cream tone */
+            background-color: #f5f5f0; /* Soft grey-cream tone */
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             margin: 0;
         }
         .receipt {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: #fffef8; /* Slight cream tone for the receipt itself */
             padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 320px;
         }
-        .header {
+        h2 {
             text-align: center;
+            margin-bottom: 5px;
+        }
+        .brand-info {
+            text-align: center;
+            font-size: 13px;
+            margin-bottom: 15px;
+            color: #444;
+        }
+        .details {
+            font-size: 14px;
             margin-bottom: 15px;
         }
-        .header h2 {
-            margin: 0;
-            font-size: 20px;
+        .details p {
+            margin: 5px 0;
         }
-        .header p {
-            margin: 3px 0;
-            font-size: 14px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-            font-size: 14px;
+        .total {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: right;
         }
         .footer {
             text-align: center;
-            margin-top: 10px;
             font-size: 13px;
-        }
-        input, button {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            font-size: 14px;
-        }
-        button {
-            background-color: #333;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #555;
+            margin-top: 15px;
+            font-style: italic;
+            color: #555;
         }
     </style>
 </head>
 <body>
-
-<div>
     <div class="receipt">
-        <div class="header">
-            <h2>FPOSH GADGET HUB</h2>
-            <p>1 Idowu Lane, CV Ikeja, Lagos</p>
-            <p>WhatsApp: 07081138777</p>
+        <h2>FPOSH GADGET HUB</h2>
+        <div class="brand-info">
+            1 Idowu Lane, CV Ikeja, Lagos <br>
+            WhatsApp: 07081138777
         </div>
 
-        <input type="text" id="customerName" placeholder="Customer Name">
-        <input type="text" id="item" placeholder="Item Purchased">
-        <input type="number" id="amount" placeholder="Amount (₦)">
+        <div class="details">
+            <p>Item: iPhone 14 Pro</p>
+            <p>Price: ₦1,200,000</p>
+            <p>Quantity: 1</p>
+            <p>Date: 15 Aug 2025</p>
+        </div>
 
-        <button onclick="generateReceipt()">Generate Receipt</button>
+        <div class="total">
+            Total: ₦1,200,000
+        </div>
 
-        <table id="receiptTable" style="display:none;">
-            <tr>
-                <th>Customer</th>
-                <td id="rCustomer"></td>
-            </tr>
-            <tr>
-                <th>Item</th>
-                <td id="rItem"></td>
-            </tr>
-            <tr>
-                <th>Amount</th>
-                <td id="rAmount"></td>
-            </tr>
-        </table>
-
-        <div class="footer" id="receiptFooter" style="display:none;">
-            <p><strong>It's authentic or nothing!</strong></p>
+        <div class="footer">
             <p>Always happy to serve you</p>
+            <p><em>It's authentic or nothing!</em></p>
         </div>
     </div>
-</div>
-
-<script>
-function generateReceipt() {
-    const name = document.getElementById('customerName').value;
-    const item = document.getElementById('item').value;
-    const amount = document.getElementById('amount').value;
-
-    if(!name || !item || !amount) {
-        alert("Please fill in all fields");
-        return;
-    }
-
-    document.getElementById('rCustomer').innerText = name;
-    document.getElementById('rItem').innerText = item;
-    document.getElementById('rAmount').innerText = "₦" + parseFloat(amount).toLocaleString();
-
-    document.getElementById('receiptTable').style.display = 'table';
-    document.getElementById('receiptFooter').style.display = 'block';
-}
-</script>
-
 </body>
 </html>
