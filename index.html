@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FPOSH GADGET HUB — Receipt</title>
+<meta name="theme-color" content="#ff5e95" />
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<style>
+  :root{--ink:#0f172a;--muted:#6b7280;--paper:#fff;--bg:#0b0b0f;--card:#14141a;--stroke:#e5e7eb;--pink:#ff5e95;}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:#fff;font-family:system-ui,-apple-system,Segoe UI,Inter,Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:720px;margin:24px auto;padding:16px}
+  .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px}
+  h1{font-size:22px;margin:0 0 4px 0}
+  .sub{color:#cbd5e1;font-size:13px;line-height:1.4}
+  .grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
+  label{font-size:12px;color:#cbd5e1}
+  input,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#0f0f14;color:#fff;font-size:16px}
+  textarea{min-height:70px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  button{flex:1 1 auto;border:0;border-radius:10px;padding:12px 14px;font-weight:700;font-size:15px;cursor:pointer}
+  .b-primary{background:#fff;color:#000}
+  .b-secondary{background:#1f1f27;color:#fff;border:1px solid rgba(255,255,255,.12)}
+  .paper{background:var(--paper);color:var(--ink);border-radius:12px;overflow:hidden;box-shadow:0 10px 28px rgba(2,6,23,.35);margin-top:16px}
+  .sheet{padding:18px}
+  .hdr h2{margin:0;font-size:18px;letter-spacing:.3px}
+  .hdr p{margin:2px 0;color:#334155;font-size:12px}
+  .line{height:2px;background:linear-gradient(90deg,var(--pink),#ffd1e2);margin:8px -10px}
+  table{width:100%;border-collapse:collapse;margin-top:6px}
+  th,td{padding:8px 6px;border-bottom:1px dashed #eaeaea;font-size:13px;text-align:left}
+  th{color:#334155}
+  .tbl-actions{margin-top:8px;text-align:right}
+  .pinkbar{text-align:center;background:var(--pink);color:#fff;font-weight:800;letter-spacing:.3px;padding:10px}
+  .totals{display:flex;justify-content:flex-end;margin-top:8px}
+  .totals .box{min-width:260px}
+  .totals .rowl{display:flex;justify-content:space-between;margin:6px 0;font-size:14px}
+  .num{font-variant-numeric:tabular-nums}
+  @media (max-width:560px){ .row{grid-template-columns:1fr} }
+  @media print{
+    body{background:#fff;color:#000}
+    .wrap{margin:0;padding:0}
+    .card,.btns{display:none}
+    .paper{border-radius:0;box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>FPOSH GADGET HUB</h1>
+    <div class="sub">“It’s authentic or nothing.” • 📍 1 Idowu Lane, Computer Village, Ikeja, Lagos • 📞 07081138777</div>
+
+    <div class="grid" id="form">
+      <div class="row">
+        <div>
+          <label>Customer Name</label>
+          <input id="custName" placeholder="e.g. Adeola Balogun" />
+        </div>
+        <div>
+          <label>Reference (optional)</label>
+          <input id="ref" placeholder="FPOSH-2025-0001" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Customer Phone (optional)</label>
+          <input id="custPhone" placeholder="e.g. 0803..." />
+        </div>
+        <div>
+          <label>Date</label>
+          <input id="date" type="date" />
+        </div>
+      </div>
+
+      <div>
+        <label>Notes / IMEI / Serial (optional)</label>
+        <textarea id="notes" placeholder="IMEI: ...  Serial: ..."></textarea>
+      </div>
+
+      <div class="paper">
+        <div class="sheet" id="receipt">
+          <div class="hdr">
+            <h2>FPOSH GADGET HUB</h2>
+            <p>“It’s authentic or nothing.”</p>
+            <p>1 Idowu Lane, Computer Village, Ikeja, Lagos • 07081138777</p>
+          </div>
+          <div class="line"></div>
+
+          <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;font-size:13px;margin:8px 0">
+            <div>
+              <div><strong>Customer:</strong> <span id="pv-cust">—</span></div>
+              <div><strong>Phone:</strong> <span id="pv-phone">—</span></div>
+            </div>
+            <div>
+              <div><strong>Ref:</strong> <span id="pv-ref">—</span></div>
+              <div><strong>Date:</strong> <span id="pv-date">—</span></div>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th style="width:12%">QTY</th>
+                <th>Description</th>
+                <th style="width:22%">Unit (₦)</th>
+                <th style="width:22%">Amount (₦)</th>
+              </tr>
+            </thead>
+            <tbody id="itemsBody">
+              <tr>
+                <td><input class="qty" type="number" value="1" min="1" inputmode="numeric" /></td>
+                <td><input class="desc" placeholder="e.g. iPhone 13 Pro Max" /></td>
+                <td><input class="unit" type="number" value="0" min="0" inputmode="numeric" /></td>
+                <td class="amount num">₦0</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="tbl-actions">
+            <button class="b-secondary" id="addItem">+ Add item</button>
+          </div>
+
+          <div class="totals">
+            <div class="box">
+              <div class="rowl"><div>Subtotal</div><div id="subtotal" class="num">₦0</div></div>
+              <div class="rowl"><div>VAT/Tax</div><div id="tax" class="num">₦0</div></div>
+              <div class="rowl" style="font-weight:800"><div>Total</div><div id="total" class="num">₦0</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="pinkbar">THANKS FOR YOUR PATRONAGE</div>
+      </div>
+
+      <div class="btns">
+        <button class="b-primary" id="btnPdf">Generate & Download PDF</button>
+        <button class="b-secondary" id="btnShare">Share PDF</button>
+        <button class="b-secondary" id="btnWhatsApp">Send WhatsApp Text</button>
+        <button class="b-secondary" id="btnReset">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- jsPDF CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-NaWTH8x1F4yqbB4wD0i8i2DP1LTKNgEDzvDkd7+5LZyK7K8U9VbV7r8O7t/4KpijtP4a0k2eTjG1v4mA7mP8aA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  const $$ = sel => document.querySelector(sel);
+  const $$$ = sel => Array.from(document.querySelectorAll(sel));
+  const fmt = v => '₦' + (Number(v||0)).toLocaleString();
+
+  // set today
+  (function setToday(){
+    const today = new Date().toISOString().split('T')[0];
+    const dateEl = $$('#date');
+    dateEl.value = today;
+    $$('#pv-date').textContent = today;
+    dateEl.addEventListener('change', e => $$('#pv-date').textContent = e.target.value);
+  })();
+
+  // live preview for top fields
+  $$('#custName').addEventListener('input', e => $$('#pv-cust').textContent = e.target.value || '—');
+  $$('#custPhone').addEventListener('input', e => $$('#pv-phone').textContent = e.target.value || '—');
+  $$('#ref').addEventListener('input', e => $$('#pv-ref').textContent = e.target.value || '—');
+
+  // items
+  function attachRowEvents(scope){
+    (scope || document).querySelectorAll('.qty,.unit').forEach(el=>{
+      el.addEventListener('input', recalc);
+    });
+  }
+  attachRowEvents(document);
+
+  function addRow(){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input class="qty" type="number" value="1" min="1" inputmode="numeric" /></td>
+      <td><input class="desc" placeholder="Description" /></td>
+      <td><input class="unit" type="number" value="0" min="0" inputmode="numeric" /></td>
+      <td class="amount num">₦0</td>`;
+    $$('#itemsBody').appendChild(tr);
+    attachRowEvents(tr);
+  }
+  $$('#addItem').addEventListener('click', addRow);
+
+  function recalc(){
+    let subtotal = 0;
+    $$$('#itemsBody tr').forEach(tr=>{
+      const q = Number(tr.querySelector('.qty').value||0);
+      const u = Number(tr.querySelector('.unit').value||0);
+      const amt = q*u;
+      tr.querySelector('.amount').textContent = fmt(amt);
+      subtotal += amt;
+    });
+    const tax = 0;
+    const total = subtotal + tax;
+    $$('#subtotal').textContent = fmt(subtotal);
+    $$('#tax').textContent = fmt(tax);
+    $$('#total').textContent = fmt(total);
+  }
+  recalc();
+
+  // build PDF using field values (not DOM rendering) so inputs are never lost
+  async function buildPdfBlob(){
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:'pt', format:'a4' });
+
+    const left = 42, right = 553, lineH = 18;
+    let y = 54;
+
+    doc.setFont('helvetica','bold'); doc.setFontSize(16);
+    doc.text('FPOSH GADGET HUB', left, y); y += lineH;
+    doc.setFont('helvetica','normal'); doc.setFontSize(11);
+    doc.text('“It’s authentic or nothing.”', left, y); y += lineH;
+    doc.text('1 Idowu Lane, Computer Village, Ikeja, Lagos • 07081138777', left, y); y += 8;
+
+    // divider
+    y += 6; doc.setDrawColor(255,94,149); doc.setLineWidth(2); doc.line(left, y, right, y); y += 16;
+
+    // header info
+    const cust = $$('#custName').value || '—';
+    const phone = $$('#custPhone').value || '—';
+    const ref = $$('#ref').value || '—';
+    const date = $$('#date').value || '—';
+    doc.setFontSize(11);
+    doc.text(`Customer: ${cust}`, left, y); y += lineH;
+    doc.text(`Phone: ${phone}`, left, y); y -= lineH*2;
+    doc.text(`Ref: ${ref}`, right-180, y); y += lineH;
+    doc.text(`Date: ${date}`, right-180, y); y += lineH+6;
+
+    // table header
+    doc.setFont('helvetica','bold');
+    doc.text('QTY', left, y);
+    doc.text('DESCRIPTION', left+60, y);
+    doc.text('UNIT (₦)', right-170, y, { align:'left' });
+    doc.text('AMOUNT (₦)', right-60, y, { align:'right' });
+    y += 8; doc.setDrawColor(220); doc.line(left, y, right, y); y += 14;
+    doc.setFont('helvetica','normal');
+
+    // rows
+    let subtotal = 0;
+    $$$('#itemsBody tr').forEach(tr=>{
+      const q = Number(tr.querySelector('.qty').value||0);
+      const d = tr.querySelector('.desc').value || '';
+      const u = Number(tr.querySelector('.unit').value||0);
+      const amt = q*u; subtotal += amt;
+
+      doc.text(String(q), left, y);
+      const descLines = doc.splitTextToSize(d, right-left-260);
+      doc.text(descLines, left+60, y);
+      doc.text((u||0).toLocaleString(), right-170, y, { align:'left' });
+      doc.text((amt||0).toLocaleString(), right-60, y, { align:'right' });
+
+      y += Math.max(lineH, descLines.length*14);
+      if (y > 740){ doc.addPage(); y = 54; }
+    });
+
+    // totals
+    y += 6; doc.setDrawColor(220); doc.line(left, y, right, y); y += 20;
+    doc.setFont('helvetica','bold');
+    doc.text('Subtotal', right-170, y, { align:'left' });
+    doc.text(subtotal.toLocaleString(), right-60, y, { align:'right' }); y += lineH;
+    doc.setFont('helvetica','normal');
+    doc.text('VAT/Tax', right-170, y, { align:'left' });
+    doc.text('0', right-60, y, { align:'right' }); y += lineH;
+    doc.setFont('helvetica','bold');
+    doc.text('Total', right-170, y, { align:'left' });
+    doc.text(subtotal.toLocaleString(), right-60, y, { align:'right' }); y += lineH+22;
+
+    // notes
+    const notes = $$('#notes').value.trim();
+    if (notes){
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      doc.text('Notes / IMEI / Serial:', left, y); y += lineH;
+      const notesLines = doc.splitTextToSize(notes, right-left);
+      doc.text(notesLines, left, y); y += notesLines.length*13 + 10;
+    }
+
+    // pink bar
+    const barH = 28;
+    doc.setFillColor(255,94,149);
+    doc.rect(0, 814-barH, 595, barH, 'F');
+    doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','bold'); doc.setFontSize(12);
+    doc.text('THANKS FOR YOUR PATRONAGE', 297.5, 814-9, { align:'center', baseline:'middle' });
+    doc.setTextColor(0,0,0);
+
+    const blob = doc.output('blob');
+    return { blob, filename: `${ref || 'fposh-receipt'}.pdf` };
+  }
+
+  // actions
+  $$('#btnPdf').addEventListener('click', async ()=>{
+    const { blob, filename } = await buildPdfBlob();
+    // Download (mobile-friendly)
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; document.body.appendChild(a);
+    a.click(); a.remove(); URL.revokeObjectURL(url);
+  });
+
+  $$('#btnShare').addEventListener('click', async ()=>{
+    const { blob, filename } = await buildPdfBlob();
+    const file = new File([blob], filename, { type:'application/pdf' });
+    if (navigator.canShare && navigator.canShare({ files:[file] })){
+      try{
+        await navigator.share({ files:[file], title:'FPOSH Receipt', text:'Your receipt from FPOSH GADGET HUB' });
+      }catch(e){ /* user cancelled */ }
+    }else{
+      // fallback to download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; document.body.appendChild(a);
+      a.click(); a.remove(); URL.revokeObjectURL(url);
+      alert('PDF downloaded. Open Files or Downloads to share via WhatsApp.');
+    }
+  });
+
+  $$('#btnWhatsApp').addEventListener('click', ()=>{
+    // text-only summary for quick share (attach PDF manually after download/share)
+    const name = $$('#custName').value || 'Customer';
+    const ref = $$('#ref').value || '-';
+    const total = $$('#total').textContent || '₦0';
+    const date = $$('#date').value || '';
+    const msg = `FPOSH GADGET HUB%0ARef: ${encodeURIComponent(ref)}%0ADate: ${encodeURIComponent(date)}%0ACustomer: ${encodeURIComponent(name)}%0ATotal: ${encodeURIComponent(total)}%0A%0AThank you for your patronage.`;
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+  });
+
+  $$('#btnReset').addEventListener('click', ()=>{
+    ['custName','custPhone','ref','notes'].forEach(id=> $$('#'+id).value = '');
+    $$('#pv-cust').textContent='—'; $$('#pv-phone').textContent='—'; $$('#pv-ref').textContent='—';
+    $$('#itemsBody').innerHTML = `
+      <tr>
+        <td><input class="qty" type="number" value="1" min="1" inputmode="numeric" /></td>
+        <td><input class="desc" placeholder="e.g. iPhone 13 Pro Max" /></td>
+        <td><input class="unit" type="number" value="0" min="0" inputmode="numeric" /></td>
+        <td class="amount num">₦0</td>
+      </tr>`;
+    attachRowEvents(document); recalc();
+  });
+
+  // keep totals fresh as user types
+  document.addEventListener('input', (e)=>{
+    if (e.target.matches('.qty,.unit')) recalc();
+  });
+</script>
+</body>
+</html>
